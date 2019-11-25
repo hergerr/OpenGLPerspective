@@ -5,6 +5,7 @@ typedef float point3[3];
 static GLfloat viewer[] = {3.0, 3.0, 10.0};
 
 static GLfloat theta = 0.0; // kąt obrotu obiektu
+static GLfloat alfa = 0.0;  // kąt obrotu obiektu
 static GLfloat pix2angle;   // przelicznik pikseli na stopnie
 
 static GLint status = 0; // stan klawiszy myszy
@@ -12,9 +13,12 @@ static GLint status = 0; // stan klawiszy myszy
                          // 1 - naciśnięty zostać lewy klawisz
 
 static int x_pos_old = 0; // poprzednia pozycja kursora myszy
+static int y_pos_old = 0;
 
 static int delta_x = 0; // różnica pomiędzy pozycją bieżącą
                         // i poprzednią kursora myszy
+
+static int delta_y = 0;
 
 void Mouse(int btn, int state, int x, int y)
 {
@@ -23,7 +27,8 @@ void Mouse(int btn, int state, int x, int y)
     {
         x_pos_old = x; // przypisanie aktualnie odczytanej pozycji kursora
                        // jako pozycji poprzedniej
-        status = 1;    // wcięnięty został lewy klawisz myszy
+        y_pos_old = y;
+        status = 1; // wcięnięty został lewy klawisz myszy
     }
     else
 
@@ -34,9 +39,10 @@ void Motion(GLsizei x, GLsizei y)
 {
 
     delta_x = x - x_pos_old; // obliczenie różnicy położenia kursora myszy
+    delta_y = y - y_pos_old;
 
     x_pos_old = x; // podstawienie bieżącego położenia jako poprzednie
-
+    y_pos_old = y;
     glutPostRedisplay(); // przerysowanie obrazu sceny
 }
 
@@ -88,10 +94,11 @@ void RenderScene(void)
     if (status == 1) // jeśli lewy klawisz myszy wcięnięty
     {
         theta += delta_x * pix2angle; // modyfikacja kąta obrotu o kat proporcjonalny
-    }                                 // do różnicy położeń kursora myszy
+        alfa += delta_y * pix2angle;
+    }
 
     glRotatef(theta, 0.0, 1.0, 0.0); //obrót obiektu o nowy kąt
-    // Ustawienie koloru rysowania na biały
+    glRotatef(alfa, 1.0, 0.0, 0.0);
     glColor3f(1.0f, 1.0f, 1.0f);
 
     glutWireTeapot(3.0);
