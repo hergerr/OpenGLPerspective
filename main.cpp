@@ -99,6 +99,7 @@ void RenderScene(void)
 
     glRotatef(theta, 0.0, 1.0, 0.0); //obrót obiektu o nowy kąt
     glRotatef(alfa, 1.0, 0.0, 0.0);
+    glScalef(1.0 + status, 1.0, 1.0);
     glColor3f(1.0f, 1.0f, 1.0f);
 
     glutWireTeapot(3.0);
