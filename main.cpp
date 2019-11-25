@@ -115,9 +115,15 @@ void RenderScene(void)
 
 void keys(unsigned char key, int x, int y)
 {
-    if(key == 'z') up += 0.1;
-    if(key == 'x') side += 0.1;
-    if(key == 'c') r++;
+    if(key == 'z') up += 0.01;
+    if(key == 'x') side += 0.01;
+    if(key == 'v') r--;
+    if(key == 'c') {
+        r++;
+        if (r >= 25.0){
+            r = 10.0;
+        }
+    }
    
     RenderScene(); // przerysowanie obrazu sceny
 }
