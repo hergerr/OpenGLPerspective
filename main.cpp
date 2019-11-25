@@ -1,8 +1,13 @@
 #include <GL/glut.h>
+#include <math.h>
 
 typedef float point3[3];
 
 static GLfloat viewer[] = {3.0, 3.0, 10.0};
+
+float up = 0.0;
+float side = 0.0;
+float r = 10.0;
 
 static GLfloat theta = 0.0; // kąt obrotu obiektu
 static GLfloat alfa = 0.0;  // kąt obrotu obiektu
@@ -86,7 +91,6 @@ void RenderScene(void)
     glLoadIdentity();
 
     // Zdefiniowanie położenia obserwatora
-    gluLookAt(viewer[0], viewer[1], viewer[2], 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 
     // Narysowanie osi przy pomocy funkcji zdefiniowanej powyżej
     Axes();
@@ -96,16 +100,28 @@ void RenderScene(void)
         theta += delta_x * pix2angle; // modyfikacja kąta obrotu o kat proporcjonalny
         alfa += delta_y * pix2angle;
     }
+    
+    gluLookAt(r * cos(2 * M_PI * side)*cos(2*M_PI*up), r*sin(2*M_PI*up), r*sin(2*M_PI*side)*cos(2*M_PI*up), 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 
-    glRotatef(theta, 0.0, 1.0, 0.0); //obrót obiektu o nowy kąt
-    glRotatef(alfa, 1.0, 0.0, 0.0);
-    glScalef(1.0 + status, 1.0, 1.0);
+    // glRotatef(theta, 0.0, 1.0, 0.0); //obrót obiektu o nowy kąt
+    // glRotatef(alfa, 1.0, 0.0, 0.0);
+    // glScalef(1.0 + status, 1.0, 1.0);
     glColor3f(1.0f, 1.0f, 1.0f);
 
     glutWireTeapot(3.0);
     glFlush();
     glutSwapBuffers();
 }
+
+void keys(unsigned char key, int x, int y)
+{
+    if(key == 'z') up += 0.1;
+    if(key == 'x') side += 0.1;
+    if(key == 'c') r++;
+   
+    RenderScene(); // przerysowanie obrazu sceny
+}
+
 
 void MyInit(void)
 {
@@ -138,6 +154,7 @@ int main(int argc, char *argv[])
     glutInitWindowSize(300, 300);
     glutInit(&argc, argv);
     glutCreateWindow("Rzutowanie perspektywiczne");
+    glutKeyboardFunc(keys);
     glutDisplayFunc(RenderScene);
     glutReshapeFunc(ChangeSize);
     glutMouseFunc(Mouse);
