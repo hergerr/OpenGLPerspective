@@ -8,6 +8,7 @@ static GLfloat viewer[] = {3.0, 3.0, 10.0};
 float up = 0.0;
 float side = 0.0;
 float r = 10.0;
+bool mode = true;
 
 static GLfloat theta = 0.0; // kąt obrotu obiektu
 static GLfloat alfa = 0.0;  // kąt obrotu obiektu
@@ -93,19 +94,26 @@ void RenderScene(void)
     // Zdefiniowanie położenia obserwatora
 
     // Narysowanie osi przy pomocy funkcji zdefiniowanej powyżej
-    Axes();
 
     if (status == 1) // jeśli lewy klawisz myszy wcięnięty
     {
         theta += delta_x * pix2angle; // modyfikacja kąta obrotu o kat proporcjonalny
         alfa += delta_y * pix2angle;
     }
-    
-    gluLookAt(r * cos(2 * M_PI * side)*cos(2*M_PI*up), r*sin(2*M_PI*up), r*sin(2*M_PI*side)*cos(2*M_PI*up), 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+    if (mode)
+    {
+        Axes();
+        gluLookAt(r * cos(2 * M_PI * side) * cos(2 * M_PI * up), r * sin(2 * M_PI * up), r * sin(2 * M_PI * side) * cos(2 * M_PI * up), 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+    }
+    else
+    {
+        Axes();
+        gluLookAt(viewer[0], viewer[1], viewer[2], 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+        glRotatef(theta, 0.0, 1.0, 0.0); //obrót obiektu o nowy kąt
+        glRotatef(alfa, 1.0, 0.0, 0.0);
+        // glScalef(1.0 + status, 1.0, 1.0);
+    }
 
-    // glRotatef(theta, 0.0, 1.0, 0.0); //obrót obiektu o nowy kąt
-    // glRotatef(alfa, 1.0, 0.0, 0.0);
-    // glScalef(1.0 + status, 1.0, 1.0);
     glColor3f(1.0f, 1.0f, 1.0f);
 
     glutWireTeapot(3.0);
@@ -115,19 +123,25 @@ void RenderScene(void)
 
 void keys(unsigned char key, int x, int y)
 {
-    if(key == 'z') up += 0.01;
-    if(key == 'x') side += 0.01;
-    if(key == 'v') r--;
-    if(key == 'c') {
+    if (key == 'z')
+        up += 0.01;
+    if (key == 'x')
+        side += 0.01;
+    if (key == 'v')
+        r--;
+    if (key == 'm')
+        mode = !mode;
+    if (key == 'c')
+    {
         r++;
-        if (r >= 25.0){
+        if (r >= 25.0)
+        {
             r = 10.0;
         }
     }
-   
+
     RenderScene(); // przerysowanie obrazu sceny
 }
-
 
 void MyInit(void)
 {
